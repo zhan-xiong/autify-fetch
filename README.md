@@ -14,3 +14,12 @@ docker run -it autify-fetch
 
 This will run the downloader inside a Dockerized container.
 
+## Libraries used
+
+This uses the `requests` library for downloading pages, and `beautifulsoup4` for parsing html of a page.
+
+## Options
+
+* The `-m` or `--metadata` option will display metadata associated with the site (number of images, number of links, download timestamp).
+
+* The `-s` or `--save_assets` option will download associated assets (CSS stylesheets, JS scripts, images) into a directory, and also rewrite the associated `link`/`script`/`img` tags to point to this directory.
