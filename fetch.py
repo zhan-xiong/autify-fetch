@@ -22,6 +22,7 @@ def display_metadata(site: str, html: str):
     print(f"num_links: {num_links}")
     print(f"images: {num_images}")
     print(f"last_fetch: {datetime.isoformat(now)}")
+    print("")
 
 def download_url(url: str, show_metadata: bool):
     try:
@@ -34,15 +35,16 @@ def download_url(url: str, show_metadata: bool):
         return
 
     parsed_url = urlparse(url)
-    # TODO(zhan-xiong): handle parsed url path.
-    file_name = parsed_url.netloc
+    # We replace slashes with underscores, to avoid strange directory traversal attacks.
+    file_name = parsed_url.netloc + parsed_url.path
+    file_name = file_name.replace("/", "_")
     if not file_name.endswith(".html"):
         file_name += ".html"
     with open(file_name, "w") as f:
         f.write(r.text)
 
     if show_metadata:
-        display_metadata(parsed_url.netloc, r.text)
+        display_metadata(parsed_url.netloc + parsed_url.path, r.text)
 
 if __name__ == "__main__":
     args = parse_args()
