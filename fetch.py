@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3
 
 import argparse
+from bs4 import BeautifulSoup
+from datetime import datetime
 import os
 import requests
 from urllib.parse import urlparse
@@ -10,6 +12,16 @@ def parse_args():
     parser.add_argument("-m", "--metadata", action="store_true")
     parser.add_argument("urls", nargs="*")
     return parser.parse_args()
+
+def display_metadata(site: str, html: str):
+    soup = BeautifulSoup(html, features="html.parser")
+    num_links = len(soup.find_all("a"))
+    num_images = len(soup.find_all("img"))
+    now = datetime.now()
+    print(f"site: {site}")
+    print(f"num_links: {num_links}")
+    print(f"images: {num_images}")
+    print(f"last_fetch: {datetime.isoformat(now)}")
 
 def download_url(url: str, show_metadata: bool):
     try:
@@ -28,6 +40,9 @@ def download_url(url: str, show_metadata: bool):
         file_name += ".html"
     with open(file_name, "w") as f:
         f.write(r.text)
+
+    if show_metadata:
+        display_metadata(parsed_url.netloc, r.text)
 
 if __name__ == "__main__":
     args = parse_args()
